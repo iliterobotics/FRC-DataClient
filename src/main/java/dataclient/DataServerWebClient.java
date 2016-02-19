@@ -9,8 +9,10 @@ import java.net.SocketException;
 import java.net.URL;
 import java.sql.Timestamp;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -18,6 +20,8 @@ import org.json.JSONObject;
 import dataclient.events.DataRecievedEvent;
 import dataclient.events.DataRecievedEventListener;
 import dataclient.localDataManagement.Schema;
+import dataclient.robotdata.RobotDataChangeListener;
+import dataclient.robotdata.RobotDataObject;
 
 /**
  * Handles HTTP connections to the RDS (Robot Data Server) over a LAN or Internet connection
@@ -29,10 +33,16 @@ import dataclient.localDataManagement.Schema;
 public class DataServerWebClient implements DataRecievedEventListener {
 
 	private Map<String, ChangeListener> collectionThreads;
-	private final URL RR_URL;
+	private Set<Schema> pushedSchemas;
+	private final String RR_URL;
 
 	public DataServerWebClient(URL url) {
+		this(url.toString());
+	}
+	
+	public DataServerWebClient(String url){
 		this.RR_URL = url;
+		pushedSchemas = new HashSet<Schema>();
 	}
 
 	public JSONObject get(String collection, String _id) {
@@ -41,6 +51,17 @@ public class DataServerWebClient implements DataRecievedEventListener {
 			defaultConnection = (HttpURLConnection) (new URL(RR_URL + "/" + collection + "/" + _id).openConnection());
 			return get(defaultConnection);
 		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public JSONObject getDirect(String collection, String _id) {
+		HttpURLConnection defaultConnection;
+		try {
+			defaultConnection = (HttpURLConnection) (new URL(RR_URL + "/direct/" + collection + "/" + _id).openConnection());
+			return (JSONObject) get(defaultConnection).getJSONArray("docs").get(0);
+		} catch (IOException | JSONException e) {
 			e.printStackTrace();
 		}
 		return null;
@@ -69,18 +90,43 @@ public class DataServerWebClient implements DataRecievedEventListener {
 		return object;
 	}
 
-	public void watch(String collection) {
-		ChangeListener cConnection = new ChangeListener(this, collection);
-		if (collectionThreads == null) {
+//TODO add watching capabilities on entire collections
+	
+//	public void watch(String collection, RobotDataChangeListener listener) {
+//		ChangeListener cConnection = new ChangeListener(this, collection, listener);
+//		if (collectionThreads == null) {
+//			collectionThreads = new HashMap<String, ChangeListener>();
+//		}
+//		if (!collectionThreads.containsKey(collection)) {
+//			collectionThreads.put(collection, cConnection);
+//			cConnection.launch();
+//		}
+//	}
+	
+	public void watch(RobotDataObject object, RobotDataChangeListener listener){
+		ChangeListener cConnection = new ChangeListener(this, object.getCollection(), object.getID(), object, listener);
+		if(collectionThreads == null){
 			collectionThreads = new HashMap<String, ChangeListener>();
 		}
-		if (!collectionThreads.containsKey(collection)) {
-			collectionThreads.put(collection, cConnection);
+		if(!collectionThreads.containsKey(object.getCollection() + object.getID())){
+			collectionThreads.put(object.getCollection() + object.getID(), cConnection);
 			cConnection.launch();
 		}
 	}
 
-	public void post(JSONObject object, String uri) {
+	/**
+	 * Takes a JSON object and posts it to the RoboWebServer url specified by this client
+	 * @param object the JSONObject to be posted MUST include the 'collection' and 'id' attributes
+	 */
+	public void postObject(JSONObject object){
+		try {
+			post(object, "/" + object.getString("collection_name") + "/" + object.get("id"));
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	private void post(JSONObject object, String uri) {
 		HttpURLConnection httpLink = null;
 		try {
 			httpLink = (HttpURLConnection) new URL(RR_URL.toString() + uri).openConnection();
@@ -115,15 +161,14 @@ public class DataServerWebClient implements DataRecievedEventListener {
 		}
 	}
 	
-	public void post(JSONObject object){
-		post(object, "");
-	}
-	
 	public void pushSchema(Schema schema){
-		post(schema.getJSONObject(), "/add_schema/" + schema.getName());
+		if(!pushedSchemas.contains(schema)){
+			post(schema.getJSONObject(), "/add_schema/" + schema.getName());
+			pushedSchemas.add(schema);
+		}
 	}
 
-	public URL getURL() {
+	public String getURL() {
 		return RR_URL;
 	}
 

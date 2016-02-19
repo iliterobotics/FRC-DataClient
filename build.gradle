@@ -1,0 +1,12 @@
+apply plugin: 'java'
+apply plugin: 'eclipse'
+
+sourceCompatibility = 1.7
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	compile 'org.mongodb:mongo-java-driver:3.2.1'
+	compile 'org.json:json:20090211'
+}
