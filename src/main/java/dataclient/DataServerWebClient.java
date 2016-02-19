@@ -117,8 +117,9 @@ public class DataServerWebClient implements DataRecievedEventListener {
 	/**
 	 * Takes a JSON object and posts it to the RoboWebServer url specified by this client
 	 * @param object the JSONObject to be posted MUST include the 'collection' and 'id' attributes
+	 * @throws IOException 
 	 */
-	public void postObject(JSONObject object){
+	public void postObject(JSONObject object) throws IOException{
 		try {
 			post(object, "/" + object.getString("collection_name") + "/" + object.get("id"));
 		} catch (JSONException e) {
@@ -126,7 +127,7 @@ public class DataServerWebClient implements DataRecievedEventListener {
 		}
 	}
 	
-	private void post(JSONObject object, String uri) {
+	private void post(JSONObject object, String uri) throws IOException {
 		HttpURLConnection httpLink = null;
 		try {
 			httpLink = (HttpURLConnection) new URL(RR_URL.toString() + uri).openConnection();
@@ -152,7 +153,7 @@ public class DataServerWebClient implements DataRecievedEventListener {
 			write.close();
 
 		} catch (IOException e) {
-			e.printStackTrace();
+			throw e;
 		} finally {
 			if (httpLink != null) {
 				httpLink.disconnect();
@@ -161,11 +162,15 @@ public class DataServerWebClient implements DataRecievedEventListener {
 		}
 	}
 	
-	public void pushSchema(Schema schema){
-		if(!pushedSchemas.contains(schema)){
+	public void pushSchema(Schema schema) throws IOException{
+		if(!hasPushedSchema(schema)){
 			post(schema.getJSONObject(), "/add_schema/" + schema.getName());
 			pushedSchemas.add(schema);
 		}
+	}
+	
+	public boolean hasPushedSchema(Schema schema){
+		return pushedSchemas.contains(schema);
 	}
 
 	public String getURL() {

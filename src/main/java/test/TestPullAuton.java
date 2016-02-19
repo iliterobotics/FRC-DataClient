@@ -1,6 +1,5 @@
 package test;
 
-import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.json.JSONException;
@@ -24,7 +23,7 @@ public class TestPullAuton {
 				e.printStackTrace();
 			}
 			System.out.println(auton.getPosition());
-		} catch (MalformedURLException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}

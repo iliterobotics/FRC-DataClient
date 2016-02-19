@@ -1,5 +1,6 @@
 package dataclient.robotdata;
 
+import java.io.IOException;
 import java.util.Iterator;
 
 import org.json.JSONException;
@@ -75,7 +76,8 @@ public abstract class RobotDataObject {
 		return null;
 	}
 	
-	public void push(){
+	public void push() throws IOException{
+		client.pushSchema(schema);
 		client.postObject(object);
 	}
 	
