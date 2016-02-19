@@ -13,12 +13,24 @@ public class AutonomousConfig extends RobotDataObject{
 																				new SchemaAttribute("defense", Schema.NUMBER),
 																				new SchemaAttribute("goal", Schema.STRING),
 																				new SchemaAttribute("delay_millis", Schema.NUMBER));
-	
-	private static final int HIGH_LEFT_GOAL = 0,
+	//GOALS
+	public static final int HIGH_LEFT_GOAL = 0,
 							 HIGH_CENTER_GOAL = 1,
 							 HIGH_RIGHT_GOAL = 2,
 							 LOW_LEFT_GOAL = 3,
 							 LOW_RIGHT_GOAL = 4;
+	//DEFENSES
+	public static final int PORTCULLIS = 0,
+							CHEVAL_DE_FRISE = 1,
+							MOAT = 2,
+							RAMPARTS = 3,
+							DRAWBRIDGE = 4,
+							SALLYPORT = 5,
+							ROCK_WALL = 6,
+							ROUGH_TERRAIN = 7,
+							LOW_BAR = 8;
+	
+	
 	
 	private int position;
 	private int defense;
@@ -63,21 +75,33 @@ public class AutonomousConfig extends RobotDataObject{
 	}
 	
 	public void setPosition(int pos){
+		if(pos < 0 || pos > 5){
+			throw new IllegalArgumentException("POSITION IS INVALID:" + pos);
+		}
 		position = pos;
 		updateJSON();
 	}
 
 	public void setDefense(int def){
+		if(def < PORTCULLIS || def > LOW_BAR){
+			throw new IllegalArgumentException("DEFENSE# IS INVALID:" + def);
+		}
 		defense = def;
 		updateJSON();
 	}
 
 	public void setGoal(int g){
+		if(g < HIGH_LEFT_GOAL || g > LOW_RIGHT_GOAL){
+			throw new IllegalArgumentException("goal# IS INVALID:" + g);	
+		}
 		goal = g;
 		updateJSON();
 	}
 	
 	public void setDelay(int d){
+		if(d < 0){
+			d = 0;
+		}
 		delay = d;
 		updateJSON();
 	}
