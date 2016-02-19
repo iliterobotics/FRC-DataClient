@@ -30,8 +30,6 @@ public class AutonomousConfig extends RobotDataObject{
 							ROUGH_TERRAIN = 7,
 							LOW_BAR = 8;
 	
-	
-	
 	private int position;
 	private int defense;
 	private int goal;
@@ -44,7 +42,7 @@ public class AutonomousConfig extends RobotDataObject{
 		setGoal(goal);
 		setDelay(delay);
 	}
-
+	
 	@Override
 	public void update(JSONObject object) {
 		try {
