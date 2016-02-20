@@ -73,7 +73,7 @@ public class AutonomousConfig extends RobotDataObject{
 			setPosition(object.getInt("position"));
 			setDefense(object.getInt("defense"));
 			setGoal(object.getInt("goal"));
-			setDelay(object.getInt("delay"));
+			setDelay(object.getInt("delay_millis"));
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
@@ -85,7 +85,7 @@ public class AutonomousConfig extends RobotDataObject{
 			getJSON().put("position", position);
 			getJSON().put("defense", defense);
 			getJSON().put("goal", goal);
-			getJSON().put("delay", delay);
+			getJSON().put("delay_millis", delay);
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
