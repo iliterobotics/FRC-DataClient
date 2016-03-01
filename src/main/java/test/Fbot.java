@@ -10,6 +10,7 @@ public class Fbot implements Runnable{
 	private DataServerWebClient client;
 	public static final String URL = "http://localhost:8083";
 	private boolean running;
+	private MockUtilityArm mockArm;
 	
 	public void run(){
 		running = true;
@@ -18,6 +19,7 @@ public class Fbot implements Runnable{
 			client = new DataServerWebClient(new URL(URL));
 			
 			ArmStatus status = new ArmStatus("test_arm", client);
+			mockArm = new MockUtilityArm();
 			
 			client.pushSchema(ArmStatus.ARM_STATUS_SCHEMA);
 			
@@ -28,11 +30,13 @@ public class Fbot implements Runnable{
 			//client.pushSchema(encoder.getSchema());
 			
 			while(running){
-				Thread.sleep(200);
-				status.setDestX(status.getDestX() - 1);
-				status.setDestY(status.getDestY() + 1);
-				status.setAlpha(status.getAlpha() + 1);
-				status.setBeta(status.getBeta() - 1);
+				Thread.sleep(1000);
+				mockArm.goTo(Math.random() * 20 -10, Math.random() * 20 - 5, status);
+				System.out.println("a:" + status.getAlpha());
+				System.out.println("b:" + status.getBeta());
+				System.out.println("x:" + status.getDestX());
+				System.out.println("y:" + status.getDestY());
+
 				status.push();
 			}
 			

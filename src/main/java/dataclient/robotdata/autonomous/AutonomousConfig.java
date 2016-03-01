@@ -108,6 +108,7 @@ public class AutonomousConfig extends RobotDataObject{
 		if(def < PORTCULLIS || def > LOW_BAR){
 			throw new IllegalArgumentException("DEFENSE# IS INVALID:" + def);
 		}
+		System.out.println(def);
 		defense = def;
 		updateJSON();
 	}
