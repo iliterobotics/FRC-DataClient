@@ -50,7 +50,7 @@ public class HighGoal extends RobotDataObject{
 		return alignment;
 	}
 	
-	public double getAngleOfElevation(){
+	public double getAzimuth(){
 		return angleOfElevation;
 	}
 	

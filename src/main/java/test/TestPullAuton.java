@@ -16,12 +16,10 @@ public class TestPullAuton {
 			AutonomousConfig auton = new AutonomousConfig(client, 0, 0, 0, 0);
 			client.pushSchema(AutonomousConfig.AUTO_CONFIG_SCHEMA);
 			auton.push();
-			try {
-				System.out.println((JSONObject) client.getDirect(auton.getCollection(), auton.getID()).getJSONArray("docs").get(0));
-				auton.update((JSONObject) client.getDirect(auton.getCollection(), auton.getID()).getJSONArray("docs").get(0));
-			} catch (JSONException e) {
-				e.printStackTrace();
-			}
+			
+			System.out.println((JSONObject) client.getDirect(auton.getCollection(), auton.getID()));
+			auton.update((JSONObject) client.getDirect(auton.getCollection(), auton.getID()));
+			
 			System.out.println(auton.getPosition());
 		} catch (Exception e) {
 			e.printStackTrace();

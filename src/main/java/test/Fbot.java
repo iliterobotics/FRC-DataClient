@@ -31,7 +31,9 @@ public class Fbot implements Runnable{
 			
 			while(running){
 				Thread.sleep(1000);
-				mockArm.goTo(Math.random() * 20 -10, Math.random() * 20 - 5, status);
+				double x = Math.random() * 80 - 40;
+				double y = Math.random() * 60 - 20;
+				mockArm.goTo(x, y, status);
 				System.out.println("a:" + status.getAlpha());
 				System.out.println("b:" + status.getBeta());
 				System.out.println("x:" + status.getDestX());

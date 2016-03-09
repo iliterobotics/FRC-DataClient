@@ -44,7 +44,7 @@ public class CameraFeedDatabase implements ITowerListener{
 	
 	private String alignment;
 	private double distance;
-	private double angleOfElevation;
+	private double azimuth;
 	
 	public CameraFeedDatabase(DataServerWebClient client, String mongodbURI, String dbname, String session){
 		this.session = session;
@@ -54,7 +54,7 @@ public class CameraFeedDatabase implements ITowerListener{
 		client.watch(metaData, setVals -> {
 			alignment = metaData.getAlignment();
 			distance = metaData.getDistance();
-			angleOfElevation = metaData.getAngleOfElevation();
+			azimuth = metaData.getAzimuth();
 		});
 		
 		mongoClient = new MongoClient(mongodbURI);
@@ -67,7 +67,13 @@ public class CameraFeedDatabase implements ITowerListener{
 		UPLOAD_OPTIONS.chunkSizeBytes(CHUNK_SIZE);
 	}
 	
-	public void pushFrame(BufferedImage image){
+	public long getFrameTimeLength(int frame){
+		GridFSDownloadStream downloadStream = bucket.openDownloadStreamByName(session + "_" + frame);
+		return downloadStream.getGridFSFile().getUploadDate().getTime();
+	}
+	
+	//**NOTE: has to be synchronized because then multiple frames are pushed simultaneously with the same frame number*/
+	public synchronized void pushFrame(BufferedImage image){
 		ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
 		try {
 			ImageIO.write(image, "PNG", byteStream);
@@ -81,6 +87,8 @@ public class CameraFeedDatabase implements ITowerListener{
 		uploadStream.write(bytes);
 		uploadStream.close();
 		
+		System.out.println("WROTE FRAME " + frameNumber + " to " + session);
+		
 		frameNumber++;
 		mostRecentFrame = image;
 	}
@@ -88,19 +96,17 @@ public class CameraFeedDatabase implements ITowerListener{
 	
 	public BufferedImage pullFrame(int n){
 		GridFSDownloadStream downloadStream = bucket.openDownloadStreamByName(session + "_" + n);
-		System.out.println("Pulling file:" + session + "_" + n);
 		byte[] bytes = new byte[(int)downloadStream.getGridFSFile().getLength()];
-		System.out.println("created byte array of " + bytes.length);
 		int parsed = 0;
 		while(parsed < bytes.length){
-			System.out.println("parsed " + parsed + " of " + bytes.length);
-			System.out.println("reading a chunk of size " + Math.min(downloadStream.getGridFSFile().getChunkSize(), bytes.length));
 			parsed += downloadStream.read(bytes, parsed, Math.min(downloadStream.getGridFSFile().getChunkSize(), bytes.length));
 		}
 		downloadStream.close();
 		
 		try {
-			return ImageIO.read(new ByteArrayInputStream(bytes));
+			BufferedImage img = ImageIO.read(new ByteArrayInputStream(bytes));
+			mostRecentFrame = img;
+			return img;
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -130,9 +136,7 @@ public class CameraFeedDatabase implements ITowerListener{
 
 	@Override
 	public void fire(TowerMessage message) {
-		System.out.println("Db got frame");
-		Thread pushImage = new Thread(new ImagePusher(this, message.bImage));
-		pushImage.start();
+		pushFrame(message.bImage);
 		
 		metaData.setAlignment(message.alignment);
 		metaData.setAngleOfElevation(message.AoE);
