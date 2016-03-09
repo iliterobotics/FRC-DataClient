@@ -1,12 +1,7 @@
 package dataclient.robotdata.vision;
 
-import java.io.IOException;
-
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import com.fauge.robotics.towertracker.ITowerListener;
-import com.fauge.robotics.towertracker.TowerMessage;
 
 import dataclient.DataServerWebClient;
 import dataclient.localDataManagement.Schema;
