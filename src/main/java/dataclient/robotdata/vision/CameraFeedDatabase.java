@@ -141,11 +141,11 @@ public class CameraFeedDatabase implements ITowerListener{
 		metaData.setAlignment(message.alignment);
 		metaData.setAngleOfElevation(message.AoE);
 		metaData.setDistance(message.distance);
-		try {
-			metaData.push();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+//		try {
+//			metaData.push();
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
 	}
 
 }
