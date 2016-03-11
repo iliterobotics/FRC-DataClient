@@ -15,7 +15,8 @@ public class AutonomousConfig extends RobotDataObject{
 	public static final Schema AUTO_CONFIG_SCHEMA = new Schema("autonomouscfg", new SchemaAttribute("position", Schema.NUMBER),
 																				new SchemaAttribute("defense", Schema.NUMBER),
 																				new SchemaAttribute("goal", Schema.STRING),
-																				new SchemaAttribute("delay_millis", Schema.NUMBER));
+																				new SchemaAttribute("delay_millis", Schema.NUMBER),
+																				new SchemaAttribute("doing_nothing", Schema.BOOLEAN));
 	//GOALS
 	public static final int HIGH_LEFT_GOAL = 0,
 							HIGH_CENTER_GOAL = 1,
@@ -42,6 +43,7 @@ public class AutonomousConfig extends RobotDataObject{
 	private int defense;
 	private int goal;
 	private int delay;
+	private boolean doingNothing;
 	private DataServerWebClient client;
 	
 	public AutonomousConfig(DataServerWebClient client, int position, int defense, int goal, int delay){
@@ -53,6 +55,7 @@ public class AutonomousConfig extends RobotDataObject{
 		setDefense(defense);
 		setGoal(goal);
 		setDelay(delay);
+		setDoingNothing(false);
 	}
 	
 	public AutonomousConfig(DataServerWebClient client){
@@ -74,6 +77,7 @@ public class AutonomousConfig extends RobotDataObject{
 			setDefense(object.getInt("defense"));
 			setGoal(object.getInt("goal"));
 			setDelay(object.getInt("delay_millis"));
+			setDoingNothing(object.getBoolean("doing_nothing"));
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
@@ -86,6 +90,7 @@ public class AutonomousConfig extends RobotDataObject{
 			getJSON().put("defense", defense);
 			getJSON().put("goal", goal);
 			getJSON().put("delay_millis", delay);
+			getJSON().put("doing_nothing", doingNothing);
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
@@ -126,6 +131,11 @@ public class AutonomousConfig extends RobotDataObject{
 			d = 0;
 		}
 		delay = d;
+		updateJSON();
+	}
+	
+	public void setDoingNothing(boolean does){
+		doingNothing = does;
 		updateJSON();
 	}
 	
@@ -200,6 +210,10 @@ public class AutonomousConfig extends RobotDataObject{
 	
 	public int getDelay(){
 		return delay;
+	}
+	
+	public boolean doesNothing(){
+		return doingNothing;
 	}
 	
 	public boolean getGoalElevation(){
