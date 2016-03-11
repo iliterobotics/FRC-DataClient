@@ -103,7 +103,7 @@ public class DataServerWebClient implements DataRecievedEventListener {
 //		}
 //	}
 	
-	public void watch(RobotDataObject object, RobotDataChangeListener listener){
+	public boolean watch(RobotDataObject object, RobotDataChangeListener listener){
 		ChangeListener cConnection = new ChangeListener(this, object.getCollection(), object.getID(), object, listener);
 		if(collectionThreads == null){
 			collectionThreads = new HashMap<String, ChangeListener>();
@@ -111,7 +111,9 @@ public class DataServerWebClient implements DataRecievedEventListener {
 		if(!collectionThreads.containsKey(object.getCollection() + object.getID())){
 			collectionThreads.put(object.getCollection() + object.getID(), cConnection);
 			cConnection.launch();
+			return true;
 		}
+		return false;
 	}
 
 	/**
