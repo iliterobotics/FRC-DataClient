@@ -14,13 +14,13 @@ public class TestPullAuton {
 		try {
 			DataServerWebClient client = new DataServerWebClient(new URL("http://localhost:8083"));
 			AutonomousConfig auton = new AutonomousConfig(client, 0, 0, 0, 0);
-			client.pushSchema(AutonomousConfig.AUTO_CONFIG_SCHEMA);
-			auton.push();
+//			client.pushSchema(AutonomousConfig.AUTO_CONFIG_SCHEMA);
+//			auton.push();
 			
 			System.out.println((JSONObject) client.getDirect(auton.getCollection(), auton.getID()));
-			auton.update((JSONObject) client.getDirect(auton.getCollection(), auton.getID()));
+			auton.update((JSONObject) client.getDirect(auton.getCollection(), auton.getID()).getJSONArray("docs").getJSONObject(0));
 			
-			System.out.println(auton.getPosition());
+			System.out.println(auton.getDefense());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

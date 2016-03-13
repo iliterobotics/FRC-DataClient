@@ -60,8 +60,8 @@ public class DataServerWebClient implements DataRecievedEventListener {
 		HttpURLConnection defaultConnection;
 		try {
 			defaultConnection = (HttpURLConnection) (new URL(RR_URL + "/direct/" + collection + "/" + _id).openConnection());
-			return (JSONObject) get(defaultConnection).getJSONArray("docs").get(0);
-		} catch (IOException | JSONException e) {
+			return (JSONObject) get(defaultConnection);//.getJSONArray("docs").get(0);
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		return null;
