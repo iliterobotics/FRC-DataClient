@@ -50,5 +50,10 @@ public class ChangeListener implements Runnable {
 		if(connection != null)connection.disconnect();
 		thread.interrupt();
 	}
+	
+	public void restart(){
+		end();
+		launch();
+	}
 
 }

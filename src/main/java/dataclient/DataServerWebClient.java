@@ -34,7 +34,7 @@ public class DataServerWebClient implements DataRecievedEventListener {
 
 	private Map<String, ChangeListener> collectionThreads;
 	private Set<Schema> pushedSchemas;
-	private final String RR_URL;
+	private String RR_URL;
 
 	public DataServerWebClient(URL url) {
 		this(url.toString());
@@ -188,5 +188,15 @@ public class DataServerWebClient implements DataRecievedEventListener {
 		for (Entry<String, ChangeListener> entry : collectionThreads.entrySet()) {
 			entry.getValue().end();
 		}
+	}
+	
+	public void resetWatchers(){
+		for(Entry<String, ChangeListener> entry : collectionThreads.entrySet()){
+			entry.getValue().restart();
+		}
+	}
+	
+	public void setURL(String url){
+		RR_URL = url;
 	}
 }
