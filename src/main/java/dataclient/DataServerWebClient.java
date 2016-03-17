@@ -27,6 +27,7 @@ import dataclient.robotdata.RobotDataObject;
  * Handles HTTP connections to the RDS (Robot Data Server) over a LAN or Internet connection
  * Processes get and push requests of robot data and new schemas you would like to be added to the server
  * 
+ * <p>ATTENTION, WE NOW USE EXCLUSIVELY PORT 5807</p>
  * @author Michael
  *
  */
@@ -41,6 +42,9 @@ public class DataServerWebClient implements DataRecievedEventListener {
 	}
 	
 	public DataServerWebClient(String url){
+		if(url.contains("8083")){
+			url = url.replace("8083", "5807");
+		}
 		this.RR_URL = url;
 		pushedSchemas = new HashSet<Schema>();
 	}
@@ -60,8 +64,9 @@ public class DataServerWebClient implements DataRecievedEventListener {
 		HttpURLConnection defaultConnection;
 		try {
 			defaultConnection = (HttpURLConnection) (new URL(RR_URL + "/direct/" + collection + "/" + _id).openConnection());
-			return (JSONObject) get(defaultConnection).getJSONArray("docs").get(0);
-		} catch (IOException | JSONException e) {
+			defaultConnection.setConnectTimeout(500);
+			return (JSONObject) get(defaultConnection);//.getJSONArray("docs").get(0);
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		return null;

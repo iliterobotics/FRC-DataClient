@@ -16,13 +16,15 @@ public class AutonomousConfig extends RobotDataObject{
 																				new SchemaAttribute("defense", Schema.NUMBER),
 																				new SchemaAttribute("goal", Schema.STRING),
 																				new SchemaAttribute("delay_millis", Schema.NUMBER),
-																				new SchemaAttribute("doing_nothing", Schema.BOOLEAN));
+																				new SchemaAttribute("doing_nothing", Schema.BOOLEAN),
+																				new SchemaAttribute("is_shooting", Schema.BOOLEAN));
 	//GOALS
 	public static final int HIGH_LEFT_GOAL = 0,
 							HIGH_CENTER_GOAL = 1,
 							HIGH_RIGHT_GOAL = 2,
 							LOW_LEFT_GOAL = 3,
-							LOW_RIGHT_GOAL = 4;
+							LOW_RIGHT_GOAL = 4,
+							NONE = 5;
 	
 	public static final int LEFT = -1,
 							CENTER = 0,
@@ -37,13 +39,15 @@ public class AutonomousConfig extends RobotDataObject{
 							SALLYPORT = 5,
 							ROCK_WALL = 6,
 							ROUGH_TERRAIN = 7,
-							LOW_BAR = 8;
+							LOW_BAR = 8,
+							NOTHING = 9;
 	
 	private int position;
 	private int defense;
 	private int goal;
 	private int delay;
 	private boolean doingNothing;
+	private boolean isShooting;
 	private DataServerWebClient client;
 	
 	public AutonomousConfig(DataServerWebClient client, int position, int defense, int goal, int delay){
@@ -56,6 +60,7 @@ public class AutonomousConfig extends RobotDataObject{
 		setGoal(goal);
 		setDelay(delay);
 		setDoingNothing(false);
+		setShooting(true);
 	}
 	
 	public AutonomousConfig(DataServerWebClient client){
@@ -78,6 +83,7 @@ public class AutonomousConfig extends RobotDataObject{
 			setGoal(object.getInt("goal"));
 			setDelay(object.getInt("delay_millis"));
 			setDoingNothing(object.getBoolean("doing_nothing"));
+			setShooting(object.getBoolean("is_shooting"));
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
@@ -91,6 +97,7 @@ public class AutonomousConfig extends RobotDataObject{
 			getJSON().put("goal", goal);
 			getJSON().put("delay_millis", delay);
 			getJSON().put("doing_nothing", doingNothing);
+			getJSON().put("is_shooting", isShooting);
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
@@ -110,7 +117,7 @@ public class AutonomousConfig extends RobotDataObject{
 	}
 
 	public void setDefense(int def){
-		if(def < PORTCULLIS || def > LOW_BAR){
+		if(def < PORTCULLIS || def > NOTHING){
 			throw new IllegalArgumentException("DEFENSE# IS INVALID:" + def);
 		}
 		System.out.println(def);
@@ -119,7 +126,7 @@ public class AutonomousConfig extends RobotDataObject{
 	}
 
 	public void setGoal(int g){
-		if(g < HIGH_LEFT_GOAL || g > LOW_RIGHT_GOAL){
+		if(g < HIGH_LEFT_GOAL || g > NONE){
 			throw new IllegalArgumentException("goal# IS INVALID:" + g);	
 		}
 		goal = g;
@@ -139,6 +146,11 @@ public class AutonomousConfig extends RobotDataObject{
 		updateJSON();
 	}
 	
+	public void setShooting(boolean shooting){
+		isShooting = shooting;
+		updateJSON();
+	}
+	
 	public static String getGoalName(int defense){
 		switch(defense){
 			case 0:
@@ -152,13 +164,14 @@ public class AutonomousConfig extends RobotDataObject{
 			case 4:
 				return "Low Right";
 			case 5:
+				return "Don't Shoot";
 		}
 		return "NAG";
 	}
 	
 	public static Map<String, Integer> getGoalNameMap(){
 		Map<String, Integer> goalNameMap = new TreeMap<String, Integer>();
-		for(int i = 0; i < 5; i++){
+		for(int i = 0; i <= NONE; i++){
 			goalNameMap.put(getGoalName(i), i);
 		}
 		return goalNameMap;
@@ -166,7 +179,7 @@ public class AutonomousConfig extends RobotDataObject{
 	
 	public static Map<String, Integer> getDefenseNameMap(){
 		Map<String, Integer> defenseNameMap = new TreeMap<String, Integer>();
-		for(int i = 0; i < 9; i++){
+		for(int i = 0; i <= NOTHING; i++){
 			defenseNameMap.put(getDefenseName(i), i);
 		}
 		return defenseNameMap;
@@ -192,6 +205,8 @@ public class AutonomousConfig extends RobotDataObject{
 				return "Rough Terrain";
 			case 8:
 				return "Low Bar";
+			case 9:
+				return "Do Nothing";
 		}
 		return "NAD";
 	}
@@ -229,6 +244,10 @@ public class AutonomousConfig extends RobotDataObject{
 				return CENTER;
 		}
 		return RIGHT;
+	}
+	
+	public boolean isShooting(){
+		return isShooting;
 	}
 	
 }
