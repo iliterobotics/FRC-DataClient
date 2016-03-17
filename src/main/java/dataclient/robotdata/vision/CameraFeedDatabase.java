@@ -136,7 +136,7 @@ public class CameraFeedDatabase implements ITowerListener{
 
 	@Override
 	public void fire(TowerMessage message) {
-		pushFrame(message.bImage);
+		//pushFrame(message.bImage);
 		
 		metaData.setAlignment(message.alignment);
 		metaData.setAngleOfElevation(message.AoE);
