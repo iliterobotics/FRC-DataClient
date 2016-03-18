@@ -30,17 +30,20 @@ public class CameraFeedDatabase implements ITowerListener{
 	
 	/** In bytes */
 	private static final int CHUNK_SIZE = 200000;
-	private final GridFSUploadOptions UPLOAD_OPTIONS;
 	
-	private final MongoClient mongoClient;
-	private final MongoDatabase mongodb;
-	private final GridFSBucket bucket;
+	private MongoClient mongoClient;
+	private GridFSUploadOptions UPLOAD_OPTIONS;
+	private MongoDatabase mongodb;
+	private GridFSBucket bucket;
 	
 	private BufferedImage mostRecentFrame;
 	private List<CameraFeedUpdateListener> updateListeners;
 	private final String session;
 	private int frameNumber;
 	private HighGoal metaData;
+	
+	private String mongoDBURI;
+	private String dbName;
 	
 	private String alignment;
 	private double distance;
@@ -56,15 +59,19 @@ public class CameraFeedDatabase implements ITowerListener{
 			distance = metaData.getDistance();
 			azimuth = metaData.getAzimuth();
 		});
-		
-		mongoClient = new MongoClient(mongodbURI);
-		mongodb = mongoClient.getDatabase(dbname);
+		mongoDBURI = mongodbURI;
+		dbName = dbname;
+	}
+	
+	public void setUpMongo(){
+		mongoClient = new MongoClient(mongoDBURI);
+		mongodb = mongoClient.getDatabase(dbName);
 		bucket = GridFSBuckets.create(mongodb, session);
 		
 		updateListeners = new ArrayList<CameraFeedUpdateListener>();
 		
 		UPLOAD_OPTIONS = new GridFSUploadOptions();
-		UPLOAD_OPTIONS.chunkSizeBytes(CHUNK_SIZE);
+		UPLOAD_OPTIONS.chunkSizeBytes(CHUNK_SIZE);	
 	}
 	
 	public long getFrameTimeLength(int frame){
