@@ -1,63 +1,65 @@
 package dataclient.robotdata.vision;
 
-import org.ilite.vision.camera.CameraConnectionFactory;
-import org.ilite.vision.camera.ICameraConnection;
-import org.ilite.vision.camera.opencv.OpenCVUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import com.fauge.robotics.towertracker.ITowerListener;
-import com.fauge.robotics.towertracker.TowerMessage;
-import com.fauge.robotics.towertracker.TowerTracker1885;
 
 import dataclient.DataServerWebClient;
 import dataclient.localDataManagement.Schema;
 import dataclient.localDataManagement.SchemaAttribute;
 import dataclient.robotdata.RobotDataObject;
 
-public class HighGoal extends RobotDataObject implements ITowerListener{
+public class HighGoal extends RobotDataObject{
 
-	private static final Schema HIGHGOAL_SCHEMA = new Schema("high_goal", new SchemaAttribute("distance_units", Schema.STRING), new SchemaAttribute("distance", Schema.NUMBER), new SchemaAttribute(
-			"angle_of_elevation", Schema.NUMBER), new SchemaAttribute("quadrant", Schema.NUMBER));
+	private static final Schema HIGHGOAL_SCHEMA = new Schema("high_goal", new SchemaAttribute("distance", Schema.NUMBER), new SchemaAttribute(
+			"angle_of_elevation", Schema.NUMBER), new SchemaAttribute("alignment", Schema.STRING), new SchemaAttribute("goal_found", Schema.BOOLEAN));
 	private double distance;
-	private String units;
 	private double angleOfElevation;
-	private int quadrant;
+	private String alignment;
+	private boolean isGoalFound;
 	public static final int I = 1, II = 2, III = 3, IV = 4;
-
-	public HighGoal(Object id, DataServerWebClient client) {
-		super(HIGHGOAL_SCHEMA, id, client);
+	public static final String DEF_ID = "1";
+	
+	public HighGoal(DataServerWebClient client) {
+		super(HIGHGOAL_SCHEMA, DEF_ID, client);
 	}
 
 	@Override
 	public void update(JSONObject object) {
 		try {
-			if (object.has("distance_units"))
-				units = object.get("distance_units").toString();
 			if (object.has("distance"))
 				distance = object.getDouble("distance");
 			if (object.has("angle_of_elevation"))
 				angleOfElevation = object.getDouble("angle_of_elevation");
-			if (object.has("quadrant")) {
-				int newQuad = object.getInt("quadrant");
-				if (newQuad >= I && newQuad <= IV) {
-					quadrant = newQuad;
-				} else {
-					// TODO when invalid quadrant is given
-				}
+			if (object.has("alignment")) {
+				alignment = object.getString("alignment");
 			}
+			if (object.has("goal_found")) {
+				isGoalFound = object.getBoolean("goal_found");
+			}
+
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
 	}
 	
-	public void setDistance(double dist){
-		this.distance = dist;
-		updateJSON();
+	public double getDistance(){
+		return distance;
 	}
 	
-	public void setUnits(String units){
-		this.units = units;
+	public String getAlignment(){
+		return alignment;
+	}
+	
+	public boolean isGoalFound(){
+		return isGoalFound;
+	}
+	
+	public double getAzimuth(){
+		return angleOfElevation;
+	}
+	
+	public void setDistance(double dist){
+		this.distance = dist;
 		updateJSON();
 	}
 	
@@ -66,42 +68,30 @@ public class HighGoal extends RobotDataObject implements ITowerListener{
 		updateJSON();
 	}
 	
-	public void setQuadrant(int quadrant){
-		if(quadrant >= I && quadrant <= IV){
-			this.quadrant = quadrant;
-		}
+	public void setAlignment(String alignment){
+		this.alignment = alignment;
+		updateJSON();
+	}
+	
+	public void setIsGoalFound(boolean found){
+		isGoalFound = found;
 		updateJSON();
 	}
 
 	@Override
 	public void updateJSON() {
-		set("distance_units", units);
-		set("units", distance);
+		set("distance", distance);
 		set("angle_of_elevation", angleOfElevation);
-		set("quadrant", quadrant);
+		set("alignment", alignment);
+		set("goal_found", isGoalFound);
 	}
 
 	@Override
 	public void reset() {
-		setQuadrant(I);
 		setDistance(0.0);
 		setAngleOfElevation(0.0);
-		setUnits("u");
-	}
-
-	@Override
-	public void fire(TowerMessage message) {
-		distance = message.distance;
-		angleOfElevation = message.AoE;
-		updateJSON();
-	}
-	
-	public static void main(String[] args){
-		OpenCVUtils.init();
-		ICameraConnection cameraConnection = CameraConnectionFactory.getCameraConnection(null);
-		TowerTracker1885 aTracker = new TowerTracker1885(cameraConnection);
-		aTracker.addTowerListener(new HighGoal(aTracker, null));
-		aTracker.start();
+		setAlignment(null);
+		setIsGoalFound(false);
 	}
 
 }

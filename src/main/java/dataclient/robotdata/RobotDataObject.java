@@ -1,10 +1,12 @@
 package dataclient.robotdata;
 
+import java.io.IOException;
 import java.util.Iterator;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import dataclient.DataClient;
 import dataclient.DataServerWebClient;
 import dataclient.localDataManagement.Schema;
 
@@ -13,9 +15,9 @@ public abstract class RobotDataObject {
 	private final String COLLECTION;
 	private Schema schema;
 	private JSONObject object;
-	private DataServerWebClient client;
+	private DataClient client;
 	
-	public RobotDataObject(String collection, Schema schema, Object id, DataServerWebClient client){
+	public RobotDataObject(String collection, Schema schema, Object id, DataClient client){
 		COLLECTION = collection;
 		ID = id.toString();
 		this.client = client;
@@ -36,7 +38,7 @@ public abstract class RobotDataObject {
 		reset();
 	}
 	
-	public RobotDataObject(Schema schema, Object id, DataServerWebClient client){
+	public RobotDataObject(Schema schema, Object id, DataClient client){
 		this(schema.getName(), schema, id, client);
 	}
 	
@@ -75,7 +77,8 @@ public abstract class RobotDataObject {
 		return null;
 	}
 	
-	public void push(){
+	public void push() throws IOException{
+		client.pushSchema(schema);
 		client.postObject(object);
 	}
 	

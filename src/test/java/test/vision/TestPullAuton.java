@@ -1,6 +1,5 @@
 package test.vision;
 
-import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.json.JSONException;
@@ -13,18 +12,17 @@ public class TestPullAuton {
 	
 	public static void main(String[] args){
 		try {
-			DataServerWebClient client = new DataServerWebClient(new URL("http://localhost:8083"));
+			DataServerWebClient client = new DataServerWebClient(new URL("http://localhost:5807"));
 			AutonomousConfig auton = new AutonomousConfig(client, 0, 0, 0, 0);
+//			client.pushSchema(AutonomousConfig.AUTO_CONFIG_SCHEMA);
+//			auton.push();
+			
 			client.pushSchema(AutonomousConfig.AUTO_CONFIG_SCHEMA);
-			auton.push();
-			try {
-				System.out.println((JSONObject) client.getDirect(auton.getCollection(), auton.getID()).getJSONArray("docs").get(0));
-				auton.update((JSONObject) client.getDirect(auton.getCollection(), auton.getID()).getJSONArray("docs").get(0));
-			} catch (JSONException e) {
-				e.printStackTrace();
-			}
-			System.out.println(auton.getPosition());
-		} catch (MalformedURLException e) {
+			System.out.println((JSONObject) client.getDirect(auton.getCollection(), auton.getID()));
+			auton.update((JSONObject) client.getDirect(auton.getCollection(), auton.getID()).getJSONArray("docs").getJSONObject(0));
+			
+			System.out.println(auton.getDefense());
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}

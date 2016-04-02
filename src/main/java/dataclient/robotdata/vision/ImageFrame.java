@@ -16,6 +16,10 @@ import dataclient.localDataManagement.Schema;
 import dataclient.localDataManagement.SchemaAttribute;
 import dataclient.robotdata.RobotDataObject;
 
+/**
+ * @deprecated This class was an old attempt to serialize and store image data. 
+ * @see {@link CameraFeedDatabase.java}
+ */
 public class ImageFrame extends RobotDataObject{
 	
 	public static final Schema IMAGE_SCHEMA = new Schema("image_frame", new SchemaAttribute("byte_array", Schema.ARRAY));

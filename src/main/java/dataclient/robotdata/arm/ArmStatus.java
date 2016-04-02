@@ -23,8 +23,8 @@ public class ArmStatus extends RobotDataObject{
 	private double destX;
 	private double destY;
 	
-	public ArmStatus(Object id, DataServerWebClient client) {
-		super(ARM_STATUS_SCHEMA.getName(), ARM_STATUS_SCHEMA, id, client);
+	public ArmStatus(DataServerWebClient client) {
+		super(ARM_STATUS_SCHEMA.getName(), ARM_STATUS_SCHEMA, "arm", client);
 	}
 	
 	@Override
