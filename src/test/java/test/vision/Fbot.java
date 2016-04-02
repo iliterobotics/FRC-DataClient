@@ -2,6 +2,7 @@ package test.vision;
 
 import java.net.URL;
 
+import test.MockUtilityArm;
 import dataclient.DataServerWebClient;
 import dataclient.robotdata.arm.ArmStatus;
 import dataclient.robotdata.shooter.ShooterStatus;

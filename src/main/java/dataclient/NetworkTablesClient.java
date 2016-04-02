@@ -9,8 +9,13 @@ import edu.wpi.first.wpilibj.networktables.NetworkTable;
 public class NetworkTablesClient implements DataClient{
 
 	private NetworkTable netTable;
+	private static final String ROBOIP = "10.18.85.2";
 	
-	public NetworkTablesClient(String tableName){
+	public NetworkTablesClient(String tableName, boolean client){
+		if(client){
+			NetworkTable.setClientMode();
+			NetworkTable.setIPAddress(ROBOIP);
+		}
 		netTable = NetworkTable.getTable(tableName);
 	}
 	
