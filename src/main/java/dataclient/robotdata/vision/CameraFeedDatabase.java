@@ -45,9 +45,11 @@ public class CameraFeedDatabase implements ITowerListener{
 	private String mongoDBURI;
 	private String dbName;
 	
-	private String alignment;
+	private String alignmentX;
+	private String alignmentY;
 	private double distance;
-	private double azimuth;
+	private double azimuthX;
+	private double azimuthY;
 	
 	public CameraFeedDatabase(DataServerWebClient client, String mongodbURI, String dbname, String session){
 		this.session = session;
@@ -55,9 +57,11 @@ public class CameraFeedDatabase implements ITowerListener{
 		
 		metaData = new HighGoal(client);
 		client.watch(metaData, setVals -> {
-			alignment = metaData.getAlignment();
+			alignmentX = metaData.getXAlignment();
+			alignmentY = metaData.getYAlignment();
 			distance = metaData.getDistance();
-			azimuth = metaData.getAzimuth();
+			azimuthX = metaData.getAzimuthX();
+			azimuthY = metaData.getAzimuthY();
 		});
 		mongoDBURI = mongodbURI;
 		dbName = dbname;
@@ -145,10 +149,12 @@ public class CameraFeedDatabase implements ITowerListener{
 	public void fire(TowerMessage message) {
 		//pushFrame(message.bImage);
 		
-		metaData.setAlignment(message.alignment);
-		metaData.setAngleOfElevation(message.AoE);
+		metaData.setXAlignment(message.alignmentX);
+		metaData.setYAlignment(message.alignmentY);
+		metaData.setAngleOfElevationX(message.aoe_X);
+		metaData.setAngleOfElevationY(message.aoe_Y);
 		metaData.setDistance(message.distance);
-		metaData.setIsGoalFound(!(message.AoE == 0 && message.distance == 0));
+		metaData.setIsGoalFound(!(message.aoe_X == 0 && message.distance == 0));
 		
 		try {
 			metaData.push();

@@ -11,10 +11,13 @@ import dataclient.robotdata.RobotDataObject;
 public class HighGoal extends RobotDataObject{
 
 	private static final Schema HIGHGOAL_SCHEMA = new Schema("high_goal", new SchemaAttribute("distance", Schema.NUMBER), new SchemaAttribute(
-			"angle_of_elevation", Schema.NUMBER), new SchemaAttribute("alignment", Schema.STRING), new SchemaAttribute("goal_found", Schema.BOOLEAN));
+			"angle_of_elevation_X", Schema.NUMBER),new SchemaAttribute(
+					"angle_of_elevation_Y", Schema.NUMBER), new SchemaAttribute("alignment", Schema.STRING), new SchemaAttribute("goal_found", Schema.BOOLEAN));
 	private double distance;
-	private double angleOfElevation;
-	private String alignment;
+	private double angleOfElevationX;
+	private double angleOfElevationY;
+	private String alignmentX;
+	private String alignmentY;
 	private boolean isGoalFound;
 	public static final int I = 1, II = 2, III = 3, IV = 4;
 	public static final String DEF_ID = "1";
@@ -28,10 +31,18 @@ public class HighGoal extends RobotDataObject{
 		try {
 			if (object.has("distance"))
 				distance = object.getDouble("distance");
-			if (object.has("angle_of_elevation"))
-				angleOfElevation = object.getDouble("angle_of_elevation");
-			if (object.has("alignment")) {
-				alignment = object.getString("alignment");
+			if (object.has("angle_of_elevation_X"))
+				angleOfElevationX = object.getDouble("angle_of_elevation_X");
+			
+			if(object.has("angle_of_elevation_Y")) {
+				angleOfElevationY = object.getDouble("angle_of_elevation_Y");
+
+			}
+			if (object.has("alignmentX")) {
+				alignmentX = object.getString("alignmentX");
+			}
+			if(object.has("alignmentY")) {
+				alignmentY = object.getString("alignmentY");
 			}
 			if (object.has("goal_found")) {
 				isGoalFound = object.getBoolean("goal_found");
@@ -46,16 +57,24 @@ public class HighGoal extends RobotDataObject{
 		return distance;
 	}
 	
-	public String getAlignment(){
-		return alignment;
+	public String getXAlignment(){
+		return alignmentX;
+	}
+	
+	public String getYAlignment() {
+		return alignmentY;
 	}
 	
 	public boolean isGoalFound(){
 		return isGoalFound;
 	}
 	
-	public double getAzimuth(){
-		return angleOfElevation;
+	public double getAzimuthX(){
+		return angleOfElevationX;
+	}
+	
+	public double getAzimuthY() {
+		return angleOfElevationY;
 	}
 	
 	public void setDistance(double dist){
@@ -63,13 +82,23 @@ public class HighGoal extends RobotDataObject{
 		updateJSON();
 	}
 	
-	public void setAngleOfElevation(double aoe){
-		this.angleOfElevation = aoe;
+	public void setAngleOfElevationX(double aoe){
+		this.angleOfElevationX = aoe;
 		updateJSON();
 	}
 	
-	public void setAlignment(String alignment){
-		this.alignment = alignment;
+	public void setAngleOfElevationY(double aoe){
+		this.angleOfElevationY = aoe;
+		updateJSON();
+	}
+	
+	public void setXAlignment(String alignmentX){
+		this.alignmentX = alignmentX;
+		updateJSON();
+	}
+	
+	public void setYAlignment(String aligmentY) {
+		this.alignmentY = aligmentY;
 		updateJSON();
 	}
 	
@@ -81,16 +110,20 @@ public class HighGoal extends RobotDataObject{
 	@Override
 	public void updateJSON() {
 		set("distance", distance);
-		set("angle_of_elevation", angleOfElevation);
-		set("alignment", alignment);
+		set("angle_of_elevation_X", angleOfElevationX);
+		set("angle_of_elevation_Y", angleOfElevationY);
+		set("alignmentX", alignmentX);
+		set("alignmentY", alignmentY);
 		set("goal_found", isGoalFound);
 	}
 
 	@Override
 	public void reset() {
 		setDistance(0.0);
-		setAngleOfElevation(0.0);
-		setAlignment(null);
+		setAngleOfElevationX(0.0);
+		setAngleOfElevationY(0.0);
+		setXAlignment(null);
+		setYAlignment(null);
 		setIsGoalFound(false);
 	}
 
