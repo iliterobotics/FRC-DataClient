@@ -155,7 +155,7 @@ public class CameraFeedDatabase implements ITowerListener{
 		metaData.setAngleOfElevationY(message.aoe_Y);
 		metaData.setDistance(message.distance);
 		metaData.setIsGoalFound(!(message.aoe_X == 0 && message.distance == 0));
-		
+		System.out.println("GOAL FOUND?:" + metaData.isGoalFound());
 		try {
 			metaData.push();
 		} catch (IOException e) {

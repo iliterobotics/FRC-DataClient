@@ -24,7 +24,7 @@ public class ChangeListener implements Runnable {
 		this.ID = ID;
 		this.listener = listener;
 		this.object = object;
-		thread = new Thread(this);
+		thread = new Thread(this, collection + "/" + ID);
 	}
 
 	public void launch() {
