@@ -1,4 +1,4 @@
-package test;
+package test.vision;
 
 import java.net.URL;
 
