@@ -75,7 +75,7 @@ public class TestVisionInterprater extends Application implements VisionListener
 				InputStream imgInput = new ByteArrayInputStream(bytesDown);
 
 				BufferedImage newImage = ImageIO.read(imgInput);
-				WritableImage wr = new WritableImage(newImage.getWidth(), newImage.getHeight());
+				final WritableImage wr = new WritableImage(newImage.getWidth(), newImage.getHeight());
 				SwingFXUtils.toFXImage(newImage, wr);
 				Platform.runLater(new Runnable(){
 					public void run() {
