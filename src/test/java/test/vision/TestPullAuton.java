@@ -1,4 +1,4 @@
-package test;
+package test.vision;
 
 import java.net.MalformedURLException;
 import java.net.URL;
