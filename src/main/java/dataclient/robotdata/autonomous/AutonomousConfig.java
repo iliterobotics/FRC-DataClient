@@ -6,6 +6,7 @@ import java.util.TreeMap;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import dataclient.DataClient;
 import dataclient.DataServerWebClient;
 import dataclient.localDataManagement.Schema;
 import dataclient.localDataManagement.SchemaAttribute;
@@ -48,9 +49,9 @@ public class AutonomousConfig extends RobotDataObject{
 	private int delay;
 	private boolean doingNothing;
 	private boolean isShooting;
-	private DataServerWebClient client;
+	private DataClient client;
 	
-	public AutonomousConfig(DataServerWebClient client, int position, int defense, int goal, int delay){
+	public AutonomousConfig(DataClient client, int position, int defense, int goal, int delay){
 		super(AUTO_CONFIG_SCHEMA, "0", client);
 		
 		this.client = client;
@@ -63,7 +64,7 @@ public class AutonomousConfig extends RobotDataObject{
 		setShooting(true);
 	}
 	
-	public AutonomousConfig(DataServerWebClient client){
+	public AutonomousConfig(DataClient client){
 		this(client, 1, LOW_BAR, HIGH_CENTER_GOAL, 0);
 	}
 	

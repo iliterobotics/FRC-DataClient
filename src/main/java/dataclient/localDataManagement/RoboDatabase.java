@@ -1,6 +1,5 @@
 package dataclient.localDataManagement;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,11 +18,7 @@ public class RoboDatabase {
 	
 	public void addSchema(Schema schema){
 		schemas.add(schema);
-		try {
-			webClient.pushSchema(schema);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		webClient.pushSchema(schema);
 	}
 	
 }

@@ -31,7 +31,7 @@ import dataclient.robotdata.RobotDataObject;
  * @author Michael
  *
  */
-public class DataServerWebClient implements DataRecievedEventListener {
+public class DataServerWebClient implements DataRecievedEventListener, DataClient {
 
 	private Map<String, ChangeListener> collectionThreads;
 	private Set<Schema> pushedSchemas;
@@ -126,7 +126,7 @@ public class DataServerWebClient implements DataRecievedEventListener {
 	 * @param object the JSONObject to be posted MUST include the 'collection' and 'id' attributes
 	 * @throws IOException 
 	 */
-	public void postObject(JSONObject object) throws IOException{
+	public void postObject(JSONObject object){
 		try {
 			post(object, "/" + object.getString("collection_name") + "/" + object.get("id"));
 		} catch (JSONException e) {
@@ -134,7 +134,7 @@ public class DataServerWebClient implements DataRecievedEventListener {
 		}
 	}
 	
-	private void post(JSONObject object, String uri) throws IOException {
+	private void post(JSONObject object, String uri){
 		HttpURLConnection httpLink = null;
 		try {
 			httpLink = (HttpURLConnection) new URL(RR_URL.toString() + uri).openConnection();
@@ -160,7 +160,7 @@ public class DataServerWebClient implements DataRecievedEventListener {
 			write.close();
 
 		} catch (IOException e) {
-			throw e;
+			e.printStackTrace();
 		} finally {
 			if (httpLink != null) {
 				httpLink.disconnect();
@@ -169,7 +169,7 @@ public class DataServerWebClient implements DataRecievedEventListener {
 		}
 	}
 	
-	public void pushSchema(Schema schema) throws IOException{
+	public void pushSchema(Schema schema){
 		if(!hasPushedSchema(schema)){
 			post(schema.getJSONObject(), "/add_schema/" + schema.getName());
 			pushedSchemas.add(schema);
