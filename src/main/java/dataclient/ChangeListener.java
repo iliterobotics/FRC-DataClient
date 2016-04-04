@@ -18,40 +18,55 @@ public class ChangeListener implements Runnable {
 	private RobotDataChangeListener listener;
 	private RobotDataObject object;
 
-	public ChangeListener(DataServerWebClient client, String collection, Object ID, RobotDataObject object, RobotDataChangeListener listener){
+	private boolean isRunning;
+
+	public ChangeListener(DataServerWebClient client, String collection, Object ID, RobotDataObject object,
+			RobotDataChangeListener listener) {
 		this.client = client;
 		this.collection = collection;
 		this.ID = ID;
 		this.listener = listener;
 		this.object = object;
+		this.isRunning = false;
 		thread = new Thread(this, collection + "/" + ID);
 	}
 
 	public void launch() {
+		this.isRunning = true;
 		thread.start();
 	}
 
 	public void run() {
-		try {
-			while (true) {
-				connection = (HttpURLConnection)(new URL(client.getURL() + "/" + collection + "/" + ID)).openConnection();
+		while (isRunning) {
+			try {
+				connection = (HttpURLConnection) (new URL(client.getURL() + "/" + collection + "/" + ID))
+						.openConnection();
 				JSONObject jsonObject = client.get(connection);
 				object.update((JSONObject) jsonObject.getJSONArray("docs").get(0));
 				listener.fire(object);
+
+			} catch (Exception e) {
+				System.out.println("Exception caught " + e.getMessage());
+//				this.isRunning = false;
+//				thread.interrupt();
 			}
-		} catch (Exception e) {
-			System.out.println("Exception caught");
-			thread.interrupt();
 		}
+
+	}
+	
+	public boolean isRunning() {
+		return this.isRunning;
 	}
 
 	public void end() {
 		System.out.println("Thread ended for " + collection + " watcher");
-		if(connection != null)connection.disconnect();
+		this.isRunning = false;
+		if (connection != null)
+			connection.disconnect();
 		thread.interrupt();
 	}
-	
-	public void restart(){
+
+	public void restart() {
 		end();
 		launch();
 	}
