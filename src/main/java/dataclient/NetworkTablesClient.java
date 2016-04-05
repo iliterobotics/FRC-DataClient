@@ -4,12 +4,16 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import dataclient.localDataManagement.Schema;
+import dataclient.robotdata.RobotDataChangeListener;
+import dataclient.robotdata.RobotDataObject;
 import edu.wpi.first.wpilibj.networktables.NetworkTable;
+import edu.wpi.first.wpilibj.tables.ITable;
+import edu.wpi.first.wpilibj.tables.ITableListener;
 
 public class NetworkTablesClient implements DataClient{
 
 	private NetworkTable netTable;
-	private static final String ROBOIP = "10.18.85.2";
+	private static final String ROBOIP = "roborio-1885-frc.local";
 	
 	public NetworkTablesClient(String tableName, boolean client){
 		if(client){
@@ -35,14 +39,28 @@ public class NetworkTablesClient implements DataClient{
 
 	public void postObject(JSONObject object) {
 		try {
-			netTable.putString(object.getString("collection") + object.getString("id"), object.toString());
+			netTable.putString(object.getString("collection_name") + object.getString("id"), object.toString());
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
 	}
-
+	
+	public boolean watch(RobotDataObject object, RobotDataChangeListener listener){
+		netTable.addTableListener(object.getCollection() + object.getID(), new ITableListener() {
+			public void valueChanged(ITable table, String key, Object theirObject, boolean bool) {
+				try {
+					object.update(new JSONObject(table.getString(key, "{}")));
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+				listener.fire(object);
+			}
+		}, true);
+		return true;
+	}
+		
 	public void pushSchema(Schema scema) {
-		System.err.println("this dataclient does not support pushing schemas!");
+		System.out.println("this dataclient does not support pushing schemas!");
 	}
 
 }

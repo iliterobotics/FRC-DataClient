@@ -3,6 +3,8 @@ package dataclient;
 import org.json.JSONObject;
 
 import dataclient.localDataManagement.Schema;
+import dataclient.robotdata.RobotDataChangeListener;
+import dataclient.robotdata.RobotDataObject;
 
 public interface DataClient {
 	
@@ -10,5 +12,6 @@ public interface DataClient {
 	JSONObject getDirect(String collection, String id);
 	void postObject(JSONObject object);
 	void pushSchema(Schema scema);
+	boolean watch(RobotDataObject object, RobotDataChangeListener listener);
 
 }

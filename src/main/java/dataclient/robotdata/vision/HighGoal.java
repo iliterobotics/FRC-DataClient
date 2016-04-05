@@ -3,7 +3,7 @@ package dataclient.robotdata.vision;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import dataclient.DataServerWebClient;
+import dataclient.DataClient;
 import dataclient.localDataManagement.Schema;
 import dataclient.localDataManagement.SchemaAttribute;
 import dataclient.robotdata.RobotDataObject;
@@ -22,7 +22,7 @@ public class HighGoal extends RobotDataObject{
 	public static final int I = 1, II = 2, III = 3, IV = 4;
 	public static final String DEF_ID = "1";
 	
-	public HighGoal(DataServerWebClient client) {
+	public HighGoal(DataClient client) {
 		super(HIGHGOAL_SCHEMA, DEF_ID, client);
 	}
 

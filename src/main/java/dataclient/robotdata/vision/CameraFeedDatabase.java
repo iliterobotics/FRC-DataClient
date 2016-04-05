@@ -20,7 +20,7 @@ import com.mongodb.client.gridfs.GridFSUploadStream;
 import com.mongodb.client.gridfs.model.GridFSUploadOptions;
 import com.mongodb.client.model.Filters;
 
-import dataclient.DataServerWebClient;
+import dataclient.DataClient;
 
 /**
  * class for taking in new frames from the camera when 
@@ -51,7 +51,7 @@ public class CameraFeedDatabase implements ITowerListener{
 	private double azimuthX;
 	private double azimuthY;
 	
-	public CameraFeedDatabase(DataServerWebClient client, String mongodbURI, String dbname, String session){
+	public CameraFeedDatabase(DataClient client, String mongodbURI, String dbname, String session){
 		this.session = session;
 		frameNumber = 0;
 		
