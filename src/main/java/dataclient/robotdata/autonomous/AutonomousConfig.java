@@ -18,7 +18,8 @@ public class AutonomousConfig extends RobotDataObject{
 																				new SchemaAttribute("goal", Schema.STRING),
 																				new SchemaAttribute("delay_millis", Schema.NUMBER),
 																				new SchemaAttribute("doing_nothing", Schema.BOOLEAN),
-																				new SchemaAttribute("is_shooting", Schema.BOOLEAN));
+																				new SchemaAttribute("is_shooting", Schema.BOOLEAN),
+																				new SchemaAttribute("returns", Schema.BOOLEAN));
 	//GOALS
 	public static final int HIGH_LEFT_GOAL = 0,
 							HIGH_CENTER_GOAL = 1,
@@ -49,6 +50,7 @@ public class AutonomousConfig extends RobotDataObject{
 	private int delay;
 	private boolean doingNothing;
 	private boolean isShooting;
+	private boolean returns;
 	private DataClient client;
 	
 	public AutonomousConfig(DataClient client, int position, int defense, int goal, int delay){
@@ -60,8 +62,9 @@ public class AutonomousConfig extends RobotDataObject{
 		setDefense(defense);
 		setGoal(goal);
 		setDelay(delay);
-		setDoingNothing(false);
-		setShooting(true);
+		setDoingNothing(true);
+		setShooting(false);
+		setReturns(false);
 	}
 	
 	public AutonomousConfig(DataClient client){
@@ -152,6 +155,11 @@ public class AutonomousConfig extends RobotDataObject{
 		updateJSON();
 	}
 	
+	public void setReturns(boolean returns){
+		this.returns = returns;
+		updateJSON();
+	}
+	
 	public static String getGoalName(int defense){
 		switch(defense){
 			case 0:
@@ -234,6 +242,10 @@ public class AutonomousConfig extends RobotDataObject{
 	
 	public boolean getGoalElevation(){
 		return goal < LOW_LEFT_GOAL;
+	}
+	
+	public boolean returns(){
+		return returns;
 	}
 	
 	public int getGoalPosition(){
