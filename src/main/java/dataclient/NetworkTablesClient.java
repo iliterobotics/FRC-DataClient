@@ -13,7 +13,7 @@ import edu.wpi.first.wpilibj.tables.ITableListener;
 public class NetworkTablesClient implements DataClient{
 
 	private NetworkTable netTable;
-	private static final String ROBOIP = "roborio-1885-frc.local";
+	private static final String ROBOIP = "10.18.85.2";
 	
 	public NetworkTablesClient(String tableName, boolean client){
 		if(client){
@@ -60,7 +60,7 @@ public class NetworkTablesClient implements DataClient{
 	}
 		
 	public void pushSchema(Schema scema) {
-		System.out.println("this dataclient does not support pushing schemas!");
+//		System.out.println("this dataclient does not support pushing schemas!");
 	}
 
 }

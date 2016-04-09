@@ -46,7 +46,7 @@ public class ChangeListener implements Runnable {
 				listener.fire(object);
 
 			} catch (Exception e) {
-				System.out.println("Exception caught " + e.getMessage());
+				System.err.println("[ChangeListener]Could not connect; error " + e.getMessage());
 //				this.isRunning = false;
 //				thread.interrupt();
 			}
