@@ -10,4 +10,5 @@ dependencies {
 	compile 'org.mongodb:mongo-java-driver:3.2.1'
 	compile 'org.json:json:20090211'
 	compile files("./lib/NetworkTables.jar")
+	compile project(':FRC-Vision')
 }
