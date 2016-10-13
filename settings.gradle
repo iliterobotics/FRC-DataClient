@@ -1,0 +1,3 @@
+include ':FRC-Vision'
+println "Settings dir= ${settingsDir}"
+project(':FRC-Vision').projectDir = new File(settingsDir,'../FRC-Vision')
